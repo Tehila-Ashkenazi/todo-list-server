@@ -13,6 +13,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ToDoDbContext>();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ToDoDbContext>();
+    context.Database.EnsureCreated();
+}
 app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
