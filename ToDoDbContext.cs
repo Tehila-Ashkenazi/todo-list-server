@@ -25,6 +25,11 @@ public partial class ToDoDbContext : DbContext
     {
         // נסיון למשוך את מחרוזת החיבור מהגדרות המערכת (Render)
         var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+        // נסיון 2: אם הראשון נכשל, ננסה דרך הפורמט הסטנדרטי של דוט-נט
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+        }
 
         // אם אנחנו במחשב האישי (ולא ב-Render), נשתמש בברירת המחדל המקומית
         if (string.IsNullOrEmpty(connectionString))
