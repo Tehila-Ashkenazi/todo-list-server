@@ -18,10 +18,27 @@ public partial class ToDoDbContext : DbContext
 
     public virtual DbSet<Item> Items { get; set; }
 
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    // => optionsBuilder.UseMySql("name=ToDoDB", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
+    //       => optionsBuilder.UseMySql("Server=localhost;Database=tododb;User=root;Password=5806097;", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // => optionsBuilder.UseMySql("name=ToDoDB", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
-           => optionsBuilder.UseMySql("Server=localhost;Database=tododb;User=root;Password=5806097;", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
+    {
+        // נסיון למשוך את מחרוזת החיבור מהגדרות המערכת (Render)
+        var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 
+        // אם אנחנו במחשב האישי (ולא ב-Render), נשתמש בברירת המחדל המקומית
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            connectionString = "Server=localhost;Database=tododb;User=root;Password=5806097;";
+        }
+
+        optionsBuilder.UseMySql(connectionString,
+            ServerVersion.AutoDetect(connectionString),
+            options => options.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null));
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
