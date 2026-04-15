@@ -3,7 +3,7 @@ using TodoApi;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddDefaultPolicy(
         policy => policy.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader());
@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ToDoDbContext>();
 
 var app = builder.Build();
-app.UseCors("AllowAll");
+app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 
