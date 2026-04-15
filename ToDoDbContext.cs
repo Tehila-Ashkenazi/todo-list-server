@@ -23,26 +23,18 @@ public partial class ToDoDbContext : DbContext
     //       => optionsBuilder.UseMySql("Server=localhost;Database=tododb;User=root;Password=5806097;", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        // נסיון למשוך את מחרוזת החיבור מהגדרות המערכת (Render)
+        // משאבת מידע חזקה יותר מה-Environment
         var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
-        // נסיון 2: אם הראשון נכשל, ננסה דרך הפורמט הסטנדרטי של דוט-נט
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
-        }
 
-        // אם אנחנו במחשב האישי (ולא ב-Render), נשתמש בברירת המחדל המקומית
         if (string.IsNullOrEmpty(connectionString))
         {
+            // ברירת מחדל למחשב שלך בבית
             connectionString = "Server=localhost;Database=tododb;User=root;Password=5806097;";
         }
 
         optionsBuilder.UseMySql(connectionString,
             ServerVersion.AutoDetect(connectionString),
-            options => options.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null));
+            options => options.EnableRetryOnFailure(maxRetryCount: 5));
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
