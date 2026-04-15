@@ -53,6 +53,7 @@ public partial class ToDoDbContext : DbContext
             ServerVersion.AutoDetect(hardcodedConnectionString),
             options => options.EnableRetryOnFailure());
     }
+  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -63,7 +64,7 @@ public partial class ToDoDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("items");
+            entity.ToTable("Items");
 
             entity.Property(e => e.Name).HasMaxLength(100);
         });
