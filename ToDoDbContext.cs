@@ -23,18 +23,26 @@ public partial class ToDoDbContext : DbContext
     //       => optionsBuilder.UseMySql("Server=localhost;Database=tododb;User=root;Password=5806097;", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        // משאבת מידע חזקה יותר מה-Environment
+        // טעינת המשתנה מה-Environment של Render
         var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
 
-        if (string.IsNullOrEmpty(connectionString))
+        if (!string.IsNullOrEmpty(connectionString))
         {
-            // ברירת מחדל למחשב שלך בבית
-            connectionString = "Server=localhost;Database=tododb;User=root;Password=5806097;";
+            // שימוש במחרוזת מהענן
+            optionsBuilder.UseMySql(connectionString,
+                ServerVersion.AutoDetect(connectionString),
+                options => options.EnableRetryOnFailure(
+                    maxRetryCount: 10,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null));
         }
-
-        optionsBuilder.UseMySql(connectionString,
-            ServerVersion.AutoDetect(connectionString),
-            options => options.EnableRetryOnFailure(maxRetryCount: 5));
+        else
+        {
+            // ברירת מחדל למחשב בבית - ודאי שזה localhost אצלך
+            var localConnectionString = "Server=localhost;Database=tododb;Uid=root;Pwd=5806097;";
+            optionsBuilder.UseMySql(localConnectionString,
+                ServerVersion.AutoDetect(localConnectionString));
+        }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
