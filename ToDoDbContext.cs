@@ -21,28 +21,37 @@ public partial class ToDoDbContext : DbContext
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //    // => optionsBuilder.UseMySql("name=ToDoDB", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
     //       => optionsBuilder.UseMySql("Server=localhost;Database=tododb;User=root;Password=5806097;", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    // טעינת המשתנה מה-Environment של Render
+    //    var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+
+    //    if (!string.IsNullOrEmpty(connectionString))
+    //    {
+    //        // שימוש במחרוזת מהענן
+    //        optionsBuilder.UseMySql(connectionString,
+    //            ServerVersion.AutoDetect(connectionString),
+    //            options => options.EnableRetryOnFailure(
+    //                maxRetryCount: 10,
+    //                maxRetryDelay: TimeSpan.FromSeconds(30),
+    //                errorNumbersToAdd: null));
+    //    }
+    //    else
+    //    {
+    //        // ברירת מחדל למחשב בבית - ודאי שזה localhost אצלך
+    //        var localConnectionString = "Server=localhost;Database=tododb;Uid=root;Pwd=5806097;";
+    //        optionsBuilder.UseMySql(localConnectionString,
+    //            ServerVersion.AutoDetect(localConnectionString));
+    //    }
+    //}
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        // טעינת המשתנה מה-Environment של Render
-        var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+        // מבחן אמת: אנחנו לא שואלים את Render כלום. אנחנו מכריחים את השרת ללכת ישירות לענן!
+        string hardcodedConnectionString = "Server=bjzwz3fhld62wsjqvx4e-mysql.services.clever-cloud.com;Database=bjzwz3fhld62wsjqvx4e;Uid=umfwn9me3yidnf83;Pwd=EOJFGdAtwNwjuXzXOkT1;SslMode=None;";
 
-        if (!string.IsNullOrEmpty(connectionString))
-        {
-            // שימוש במחרוזת מהענן
-            optionsBuilder.UseMySql(connectionString,
-                ServerVersion.AutoDetect(connectionString),
-                options => options.EnableRetryOnFailure(
-                    maxRetryCount: 10,
-                    maxRetryDelay: TimeSpan.FromSeconds(30),
-                    errorNumbersToAdd: null));
-        }
-        else
-        {
-            // ברירת מחדל למחשב בבית - ודאי שזה localhost אצלך
-            var localConnectionString = "Server=localhost;Database=tododb;Uid=root;Pwd=5806097;";
-            optionsBuilder.UseMySql(localConnectionString,
-                ServerVersion.AutoDetect(localConnectionString));
-        }
+        optionsBuilder.UseMySql(hardcodedConnectionString,
+            ServerVersion.AutoDetect(hardcodedConnectionString),
+            options => options.EnableRetryOnFailure());
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
