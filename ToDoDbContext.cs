@@ -47,7 +47,9 @@ public partial class ToDoDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // מבחן אמת: אנחנו לא שואלים את Render כלום. אנחנו מכריחים את השרת ללכת ישירות לענן!
-        string hardcodedConnectionString = "Server=bjzwz3fhld62wsjqvx4e-mysql.services.clever-cloud.com;Database=bjzwz3fhld62wsjqvx4e;Uid=umfwn9me3yidnf83;Pwd=EOJFGdAtwNwjuXzXOkT1;SslMode=None;";
+        //string hardcodedConnectionString = "Server=bjzwz3fhld62wsjqvx4e-mysql.services.clever-cloud.com;Database=bjzwz3fhld62wsjqvx4e;Uid=umfwn9me3yidnf83;Pwd=EOJFGdAtwNwjuXzXOkT1;SslMode=None;";
+        string hardcodedConnectionString =
+            "Server=bjzwz3fhld62wsjqvx4e-mysql.services.clever-cloud.com;Database=bjzwz3fhld62wsjqvx4e;Uid=umfwn9me3yidnf83;Pwd=EOJFGdAtwNwjuXzXOkT1;SslMode=Required;";
 
         optionsBuilder.UseMySql(hardcodedConnectionString,
             ServerVersion.AutoDetect(hardcodedConnectionString),
